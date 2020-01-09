@@ -35,6 +35,9 @@ mod core_geometry_tests {
         ma /= scal;
 
         assert_eq!(adivs, ma);
+
+        let c = Vector2f::new(1.0, -3.0);
+        assert_eq!(Vector2f::abs(&c), Vector2f::new(c.x.abs(), c.y.abs()));
     }
 
     #[test]
@@ -70,5 +73,8 @@ mod core_geometry_tests {
         ma /= scal;
 
         assert_eq!(adivs, ma);
+
+        let c = Vector3f::new(1.0, -3.0, 2.0);
+        assert_eq!(Vector3f::abs(&c), Vector3f::new(c.x.abs(), c.y.abs(), c.z.abs()));
     }
 }
