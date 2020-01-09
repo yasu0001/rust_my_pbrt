@@ -1,11 +1,11 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Neg, Index};
 use std::cmp::{min, max};
-
+use std::convert::From;
 
 pub type Vector2f=Vector2<f32>;
-pub type Vector2i=Vector2<i32>;
+pub type Vector2i=Vector2<i16>;
 pub type Vector3f=Vector3<f32>;
-pub type Vector3i=Vector3<i32>;
+pub type Vector3i=Vector3<i16>;
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Vector2<T> {
@@ -416,5 +416,312 @@ impl Vector3i {
             y: v.y.abs(),
             z: v.z.abs(),
         }
+    }
+}
+
+pub type Point2f = Point2<f32>;
+pub type Point2i = Point2<i16>;
+pub type Point3f = Point3<f32>;
+pub type Point3i = Point3<i16>;
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct Point2<T> {
+    pub x: T,
+    pub y: T,
+}
+
+impl<T> Point2<T> {
+    pub fn new(x: T, y: T) -> Self {
+        Self {
+            x, y
+        }
+    }
+
+    pub fn into<U: Into<T> + Copy>(v: &Point2<U>) -> Point2<T> {
+        Self {
+            x: v.x.into(),
+            y: v.y.into(),
+        }
+    }
+}
+
+impl<T> Point2<T> 
+    where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Copy{
+
+    pub fn to_vector2(&self) -> Vector2<T> {
+        Vector2::new(self.x, self.y)
+    }
+
+    pub fn sub_vector(&self, v: Vector2<T>) -> Self {
+        Self {
+            x: self.x - v.x,
+            y: self.y - v.y,
+        }
+    }
+
+    pub fn add_vector(&self, v: Vector2<T>) -> Self {
+        Self {
+            x: self.x + v.x,
+            y: self.y + v.y
+        }
+    }
+
+    pub fn length_squared(p1: Self, p2: Self) -> T {
+        (p1 - p2).length_squared()
+    }
+}
+
+impl Point2f {
+    pub fn length(p1: Self, p2: Self) -> f32 {
+        (p1 - p2).length()
+    }
+}
+
+impl<T> Add<Vector2<T>> for Point2<T> 
+    where T: Add<Output=T> {
+    type Output = Self;
+
+    fn add(self, other: Vector2<T>) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl<T> AddAssign<Vector2<T>> for Point2<T>
+    where T: Add<Output=T> + Copy {
+    fn add_assign(&mut self, other: Vector2<T>) {
+        *self = Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl<T> Sub for Point2<T> 
+    where T: Sub<Output=T>{
+    type Output = Vector2<T>;
+
+    fn sub(self, other: Self) -> Vector2<T> {
+        Vector2::new(self.x - other.x, self.y - other.y)
+    }
+}
+
+impl<T> SubAssign<Vector2<T>> for Point2<T> 
+    where T: Sub<Output=T> + Copy {
+    
+    fn sub_assign(&mut self, v: Vector2<T>) {
+        *self = Self {
+            x: self.x - v.x,
+            y: self.y - v.y,
+        }
+    }
+}
+
+impl<T> Mul<T> for Point2<T> 
+    where T: Mul<Output=T> + Copy {
+    type Output=Self;
+
+    fn mul(self, other: T) -> Self {
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+        }
+    }
+}
+
+impl<T> MulAssign<T> for Point2<T> 
+    where T: Mul<Output=T> + Copy {
+    fn mul_assign(&mut self, other: T) {
+        *self = *self * other;
+    }
+}
+
+impl<T> Div<T> for Point2<T>
+    where T: Div<Output=T> + Copy {
+    type Output = Self;
+
+    fn div(self, other: T) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+        }
+    }
+}
+
+impl<T> DivAssign<T> for Point2<T>
+    where T: Div<Output=T> + Copy {
+
+    fn div_assign(&mut self, other: T) {
+        *self = *self / other;
+    }
+}
+
+impl<T> Index<usize> for Point2<T> {
+    type Output=T;
+    fn index(&self, index: usize) -> &T {
+        assert!(index < 3);
+        if (index == 0) {return &self.x;}
+        &self.y
+    }
+}
+
+#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+pub struct Point3<T> {
+    pub x: T,
+    pub y: T,
+    pub z: T,
+}
+
+impl<T> Point3<T> {
+    pub fn new(x: T, y: T, z: T) -> Self {
+        Self {
+            x, y, z
+        }
+    }
+}
+
+
+impl<T> Point3<T> 
+    where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Neg<Output=T> +Copy {
+
+    pub fn to_vector3(&self) -> Vector3<T> {
+        Vector3::new(self.x, self.y, self.z)
+    }
+
+    pub fn sub_vector(&self, v: Vector3<T>) -> Self {
+        Self {
+            x: self.x - v.x,
+            y: self.y - v.y,
+            z: self.z - v.z,
+        }
+    }
+
+    pub fn add_vector(&self, v: Vector3<T>) -> Self {
+        Self {
+            x: self.x + v.x,
+            y: self.y + v.y,
+            z: self.z + v.z,
+        }
+    }
+
+    pub fn length_squared(p1: Self, p2: Self) -> T {
+        (p1 - p2).length_squared()
+    }
+}
+
+impl Point3f {
+    pub fn length(p1: Self, p2: Self) -> f32 {
+        (p1 - p2).length()
+    }
+}
+
+impl<T> Add<Vector3<T>> for Point3<T> 
+    where T: Add<Output=T> {
+    type Output = Self;
+
+    fn add(self, other: Vector3<T>) -> Self {
+        Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+impl<T> AddAssign<Vector3<T>> for Point3<T>
+    where T: Add<Output=T> + Copy {
+    fn add_assign(&mut self, other: Vector3<T>) {
+        *self = Self {
+            x: self.x + other.x,
+            y: self.y + other.y,
+            z: self.z + other.z,
+        }
+    }
+}
+
+impl<T> Sub for Point3<T> 
+    where T: Sub<Output=T>{
+    type Output = Vector3<T>;
+
+    fn sub(self, other: Self) -> Vector3<T> {
+        Vector3::new(self.x - other.x, self.y - other.y, self.z - other.z)
+    }
+}
+
+impl<T> SubAssign<Vector3<T>> for Point3<T> 
+    where T: Sub<Output=T> + Copy {
+    
+    fn sub_assign(&mut self, v: Vector3<T>) {
+        *self = Self {
+            x: self.x - v.x,
+            y: self.y - v.y,
+            z: self.z - v.z,
+        }
+    }
+}
+
+impl<T> Mul<T> for Point3<T> 
+    where T: Mul<Output=T> + Copy {
+    type Output=Self;
+
+    fn mul(self, other: T) -> Self {
+        Self {
+            x: self.x * other,
+            y: self.y * other,
+            z: self.z * other,
+        }
+    }
+}
+
+impl<T> MulAssign<T> for Point3<T> 
+    where T: Mul<Output=T> + Copy {
+    fn mul_assign(&mut self, other: T) {
+        *self = *self * other;
+    }
+}
+
+impl<T> Div<T> for Point3<T>
+    where T: Div<Output=T> + Copy {
+    type Output = Self;
+
+    fn div(self, other: T) -> Self {
+        Self {
+            x: self.x / other,
+            y: self.y / other,
+            z: self.z / other,
+        }
+    }
+}
+
+impl<T> DivAssign<T> for Point3<T>
+    where T: Div<Output=T> + Copy {
+
+    fn div_assign(&mut self, other: T) {
+        *self = *self / other;
+    }
+}
+
+impl<T> Neg for Point3<T>
+    where T: Neg<Output=T> {
+    type Output=Self;
+    
+    fn neg(self) -> Self {
+        Self {
+            x: -self.x,
+            y: -self.y,
+            z: -self.z,
+        }
+    }
+}
+
+impl<T> Index<usize> for Point3<T> {
+    type Output=T;
+    fn index(&self, index: usize) -> &T {
+        assert!(index < 3);
+        if (index == 0) {return &self.x;}
+        if (index == 1) {return &self.y;}
+        &self.z
     }
 }
