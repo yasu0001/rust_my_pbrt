@@ -181,4 +181,46 @@ mod core_geometry_tests {
         assert_eq!(Point3f::min(&a, &b), Point3f::new(a.x.min(b.x), a.y.min(b.y), a.z.min(b.z)));
         assert_eq!(Point3f::permute(&a, 1, 2, 0), Point3f::new(a.y, a.z, a.x));
     }
+
+    #[test]
+    fn check_arith_normal() {
+        assert_eq!(
+            Normal3 {
+                x: 1.0,
+                y: 2.0,
+                z: 3.0
+            },
+            Normal3::new(1.0, 2.0, 3.0)
+        );
+
+        let a = Normal3::new(1, 2, 3);
+        let a = Normal3::new(1.0, 2.0, 3.0);
+        let c = Normal3::new(3.0, 1.0, 4.0);
+        let b = Normal3::new(2.0, 3.0, 1.0);
+        let scal = 3.0;
+        assert_eq!(Normal3::new(a.x + b.x, a.y + b.y, a.z + b.z), a + b);
+        assert_eq!(Normal3::new(a.x - c.x, a.y - c.y, a.z - c.z), a - c);
+        assert_eq!(Normal3::new(a.x * scal, a.y * scal, a.z * scal), a * scal);
+        assert_eq!(Normal3::new(a.x / scal, a.y / scal, a.z / scal), a / scal);
+        assert_eq!(1.0, a[0]);
+        assert_eq!(2.0, a[1]);
+
+        let mut ma = Normal3::new(1.0, 2.0, 3.0);
+        ma += b;
+        assert_eq!(ma, a + b);
+
+        ma = a;
+        ma *= scal;
+        assert_eq!(ma, a * scal);
+
+        ma = a;
+        ma /= scal;
+        assert_eq!(ma, a / scal);
+
+        let a = Normal3::new(1.2, 2.6, 4.0);
+        let b = Normal3::new(1.0, -3.0, 3.0);
+        let t: f32 = 0.7;
+        assert_eq!(a.length_squared(), a.x * a.x + a.y * a.y + a.z + a.z as f32);
+        assert_eq!(a.length_squared().sqrt(), a.length());
+    }
 }
