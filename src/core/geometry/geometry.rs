@@ -7,23 +7,30 @@ pub type Vector2i=Vector2<i16>;
 pub type Vector3f=Vector3<f32>;
 pub type Vector3i=Vector3<i16>;
 
+pub trait Geometry2<T> {
+    type Output;
+    fn new(x:T, y:T) -> Self::Output;
+}
+
+pub trait Geometry<T> {
+    fn new(geo: T) -> Self;
+}
+
 #[derive(Debug, Copy, Clone, PartialEq, Eq)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
 }
 
-impl<T> Vector2<T> {
-    pub fn new(x: T, y: T) -> Self {
+impl<T> Geometry2<T> for Vector2<T> {
+    type Output=Self;
+    fn new(x: T, y: T) -> Self {
         Self {x, y}
     }
 }
 
 impl<T> Vector2<T> 
     where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T>+ Copy {
-    pub fn length_squared(&self) -> T {
-        self.x * self.x + self.y * self.y
-    }
 
     pub fn dot(v1: &Self, v2: &Self) -> T {
         v1.x * v2.x + v1.y * v2.y
@@ -149,16 +156,22 @@ impl<T> Index<usize> for Vector2<T> {
     }
 }
 
+impl<T> Vector2<T>
+    where T: Into<f32> + Copy { 
+    pub fn length(&self) -> f32 {
+        self.length_squared().sqrt()
+    }
+    pub fn length_squared(&self) -> f32 {
+        self.x.into() * self.x.into() + self.y.into() * self.y.into()
+    }
+}
+
 impl Vector2f {
     pub fn abs(v: &Self) -> Self {
         Self {
             x: v.x.abs(),
             y: v.y.abs(),
         }
-    }
-
-    pub fn length(&self) -> f32 {
-        self.length_squared().sqrt()
     }
 
     pub fn normalize(v: &Self) -> Self {
@@ -190,9 +203,6 @@ impl<T> Vector3<T> {
 
 impl<T> Vector3<T> 
     where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Neg<Output=T> + Copy {
-    pub fn length_squared(&self) -> T {
-        self.x * self.x + self.y * self.y + self.z * self.z
-    }
 
     pub fn dot(v1: &Self, v2: &Self) -> T {
         v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
@@ -382,6 +392,16 @@ impl<T> Index<usize> for Vector3<T> {
     }
 }
 
+impl<T> Vector3<T>
+    where T: Into<f32> + Sub<Output=T> + Copy {
+    pub fn length_squared(&self) -> f32 {
+        self.x.into() * self.x.into() + self.y.into() * self.y.into() + self.z.into() * self.z.into()
+    }
+    pub fn length(&self) -> f32 {
+        self.length_squared().sqrt()
+    }
+}
+
 impl Vector3f {
     pub fn abs(v: &Self) -> Self {
         Self {
@@ -389,10 +409,6 @@ impl Vector3f {
             y: v.y.abs(),
             z: v.z.abs(),
         }
-    }
-
-    pub fn length(&self) -> f32 {
-        self.length_squared().sqrt()
     }
 
     pub fn normalize(v: &Self) -> Self {
@@ -465,8 +481,12 @@ impl<T> Point2<T>
             y: self.y + v.y
         }
     }
+}
 
-    pub fn length_squared(p1: Self, p2: Self) -> T {
+impl<T> Point2<T>
+    where T: Into<f32> + Sub<Output=T> + Copy {
+    
+    pub fn length_squared(p1: Self, p2: Self) -> f32 {
         (p1 - p2).length_squared()
     }
 }
@@ -580,8 +600,14 @@ impl<T> Point3<T> {
             x, y, z
         }
     }
+    pub fn into<U: Into<T> + Copy>(v: &Point3<U>) -> Point3<T> {
+        Self {
+            x: v.x.into(),
+            y: v.y.into(),
+            z: v.z.into(),
+        }
+    }
 }
-
 
 impl<T> Point3<T> 
     where T: Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Neg<Output=T> +Copy {
@@ -606,14 +632,52 @@ impl<T> Point3<T>
         }
     }
 
-    pub fn length_squared(p1: Self, p2: Self) -> T {
-        (p1 - p2).length_squared()
+    pub fn add_point(p0: Self, p1: Self) -> Self {
+        Self {
+            x: p0.x + p1.x,
+            y: p0.y + p1.y,
+            z: p0.z + p1.z,
+        }
     }
 }
 
-impl Point3f {
+impl<T> Point3<T>
+    where T:Into<f32> + Mul<Output=T> + Add<Output=T> + Sub<Output=T> + Neg<Output=T> +Copy {
+
+    pub fn lerp(t: f32, p0: Self, p1: Self) -> Point3f {
+        Point3f::add_point(Point3f::into(&p0)*(1.0-t), Point3f::into(&p1)*t)
+    }
+}
+
+impl<T> Point3<T>
+    where T: Ord + Copy {
+    
+    pub fn max(p1: &Self, p2: &Self) -> Self {
+        Self::new(max(p1.x, p2.x), max(p1.y, p2.y), max(p1.z, p2.z))
+    }
+
+    pub fn min(p1: &Self, p2: &Self) -> Self {
+        Self::new(min(p1.x,p2.x), min(p1.y, p2.y), min(p1.z, p2.z))
+    }
+}
+
+impl<T> Point3<T>
+    where T: Into<f32> + Sub<Output=T> + Copy {
+
+    pub fn length_squared(p1: Self, p2: Self) -> f32 {
+        (p1 - p2).length_squared()
+    }
+
     pub fn length(p1: Self, p2: Self) -> f32 {
         (p1 - p2).length()
+    }
+
+    pub fn distance(p1: &Self, p2: &Self) -> f32 {
+        (*p1 - *p2).length()
+    }
+
+    pub fn distance_squared(p1: &Self, p2: &Self) -> f32 {
+        (*p1 - *p2).length_squared()
     }
 }
 
@@ -706,7 +770,7 @@ impl<T> DivAssign<T> for Point3<T>
 impl<T> Neg for Point3<T>
     where T: Neg<Output=T> {
     type Output=Self;
-    
+
     fn neg(self) -> Self {
         Self {
             x: -self.x,
@@ -723,5 +787,19 @@ impl<T> Index<usize> for Point3<T> {
         if (index == 0) {return &self.x;}
         if (index == 1) {return &self.y;}
         &self.z
+    }
+}
+
+impl Point3f {
+    pub fn abs(p: &Self) -> Self {
+        Self::new(p.x.abs() , p.y.abs(), p.z.abs())
+    }
+
+    pub fn ceil(p: &Self) -> Self {
+        Self::new(p.x.ceil(), p.y.ceil(), p.z.ceil())
+    }
+
+    pub fn floor(p: &Self) -> Self {
+        Self::new(p.x.floor(), p.y.floor(), p.z.floor())
     }
 }
