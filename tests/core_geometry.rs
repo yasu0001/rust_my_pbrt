@@ -177,5 +177,8 @@ mod core_geometry_tests {
         assert_eq!(Point3f::floor(&a), Point3f::new(a.x.floor(), a.y.floor(), a.z.floor()));
         assert_eq!(Point3f::abs(&a), Point3f::new(a.x.abs(), a.y.abs(), a.z.abs()));
         //assert_eq!(Point3f::max(&a, &b), Point3f::new())
+        assert_eq!(Point3f::max(&a, &b), Point3f::new(a.x.max(b.x), a.y.max(b.y), a.z.max(b.z)));
+        assert_eq!(Point3f::min(&a, &b), Point3f::new(a.x.min(b.x), a.y.min(b.y), a.z.min(b.z)));
+        assert_eq!(Point3f::permute(&a, 1, 2, 0), Point3f::new(a.y, a.z, a.x));
     }
 }
