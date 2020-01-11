@@ -223,4 +223,10 @@ mod core_geometry_tests {
         assert_eq!(a.length_squared(), a.x * a.x + a.y * a.y + a.z + a.z as f32);
         assert_eq!(a.length_squared().sqrt(), a.length());
     }
+    #[test]
+    fn check_bounds() {
+        let a = Bounds2f::new(1.0, 3.0);
+        assert_eq!(Point2f::new(1.0, 1.0), a.p_min);
+        assert_eq!(Point2f::new(3.0, 3.0), a.p_max);
+    }
 }

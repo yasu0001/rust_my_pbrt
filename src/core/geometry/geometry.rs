@@ -1,5 +1,4 @@
 use std::cmp::{max, min};
-use std::convert::From;
 use std::f32;
 use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Neg, Sub, SubAssign};
 
@@ -173,7 +172,7 @@ impl<T> Index<usize> for Vector2<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
         assert!(index < 3);
-        if (index == 0) {
+        if index == 0 {
             return &self.x;
         }
         &self.y
@@ -283,14 +282,14 @@ where
     T: PartialOrd,
 {
     pub fn max_dimension(&self) -> i32 {
-        if (self.x > self.y) {
-            if (self.x > self.z) {
+        if self.x > self.y {
+            if self.x > self.z {
                 0
             } else {
                 2
             }
         } else {
-            if (self.y > self.z) {
+            if self.y > self.z {
                 1
             } else {
                 2
@@ -429,10 +428,10 @@ impl<T> Index<usize> for Vector3<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
         assert!(index < 4);
-        if (index == 0) {
+        if index == 0 {
             return &self.x;
         }
-        if (index == 1) {
+        if index == 1 {
             return &self.y;
         }
         &self.z
@@ -467,7 +466,7 @@ impl Vector3f {
     }
 
     pub fn coordinate_sysytem(v1: &Self, v2: &mut Self, v3: &mut Self) {
-        if (v1.x.abs() > v1.y.abs()) {
+        if v1.x.abs() > v1.y.abs() {
             *v2 = Vector3::new(-v1.z, 0.0, v1.x) / (v1.x * v1.x + v1.z * v1.z).sqrt()
         } else {
             *v2 = Vector3::new(0.0, v1.z, -v1.y) / (v1.y * v1.y + v1.z * v1.z).sqrt()
@@ -647,7 +646,7 @@ impl<T> Index<usize> for Point2<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
         assert!(index < 3);
-        if (index == 0) {
+        if index == 0 {
             return &self.x;
         }
         &self.y
@@ -863,10 +862,10 @@ impl<T> Index<usize> for Point3<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
         assert!(index < 3);
-        if (index == 0) {
+        if index == 0 {
             return &self.x;
         }
-        if (index == 1) {
+        if index == 1 {
             return &self.y;
         }
         &self.z
@@ -1050,10 +1049,10 @@ impl<T> Index<usize> for Normal3<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
         assert!(index < 4);
-        if (index == 0) {
+        if index == 0 {
             return &self.x;
         }
-        if (index == 1) {
+        if index == 1 {
             return &self.y;
         }
         &self.z
