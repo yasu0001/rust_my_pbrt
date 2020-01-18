@@ -229,4 +229,47 @@ mod core_geometry_tests {
         assert_eq!(Point2f::new(1.0, 1.0), a.p_min);
         assert_eq!(Point2f::new(3.0, 3.0), a.p_max);
     }
+
+    #[test]
+    fn future_vector() {
+        let v1 = Vector2_F {x:1.0, y:3.0};
+        let v2 = Vector2_F::new(1.0, 3.0);
+        assert_eq!(v1, v2);
+
+        let v1 = Vector2_F::new(1.0, 3.0);
+        let v2 = Vector2_F::new(2.0, 5.0);
+        let scal = 2.0;
+
+        assert_eq!(v1+v2, Vector2_F::new(v1.x + v2.x, v1.y + v2.y));
+        assert_eq!(v1-v2, Vector2_F::new(v1.x - v2.x, v1.y - v2.y));
+        assert_eq!(v1*scal , Vector2_F::new(v1.x *scal, v1.y *scal));
+        assert_eq!(v1/scal , Vector2_F::new(v1.x /scal, v1.y /scal));
+        assert_eq!(-v1, Vector2_F::new(-v1.x, -v1.y));
+
+        assert_eq!({
+            let mut v1m = v1;
+            v1m += v2;
+            v1m
+        }, v1+v2);
+
+        assert_eq!({
+            let mut v1m = v1;
+            v1m -= v2;
+            v1m
+        }, v1-v2);
+
+        assert_eq!({
+            let mut v1m = v1;
+            v1m *= scal;
+            v1m
+        }, v1*scal);
+        
+        assert_eq!({
+            let mut v1m = v1;
+            v1m /= scal;
+            v1m
+        }, v1/scal);
+
+        assert_eq!(v1.length_squared(), v1.x * v1.x + v1.y * v1.y);
+    }
 }
