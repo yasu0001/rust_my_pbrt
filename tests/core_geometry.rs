@@ -220,7 +220,7 @@ mod core_geometry_tests {
         let a = Normal3::new(1.2, 2.6, 4.0);
         let b = Normal3::new(1.0, -3.0, 3.0);
         let t: f32 = 0.7;
-        assert_eq!(a.length_squared(), a.x * a.x + a.y * a.y + a.z + a.z as f32);
+        assert_eq!(a.length_squared(), a.x * a.x + a.y * a.y + a.z * a.z);
         assert_eq!(a.length_squared().sqrt(), a.length());
     }
     #[test]

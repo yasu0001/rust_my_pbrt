@@ -16,10 +16,18 @@ pub struct Vector3<T> {
     pub z: T,
 }
 
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
+pub struct Normal3<T> {
+    pub x: T,
+    pub y: T,
+    pub z: T,
+}
+
 pub type Vector2f = Vector2<f32>;
 pub type Vector2i = Vector2<i16>;
 pub type Vector3f = Vector3<f32>;
 pub type Vector3i = Vector3<i16>;
+pub type Normal3f = Normal3<f32>;
 
 macro_rules! impl_vector {
     ($VectorN: ident {$($field: ident), *}) => {
@@ -139,6 +147,7 @@ macro_rules! impl_abs_dot_vector {
 impl<T> Index<usize> for Vector2<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
+        assert!(index < 3);
         if index == 0 {
             &self.x
         } else {
@@ -146,9 +155,11 @@ impl<T> Index<usize> for Vector2<T> {
         }
     }
 }
+
 impl<T> Index<usize> for Vector3<T> {
     type Output = T;
     fn index(&self, index: usize) -> &T {
+        assert!(index < 4);
         if index == 0 {
             &self.x
         } else if index == 1{
@@ -158,6 +169,21 @@ impl<T> Index<usize> for Vector3<T> {
         }
     }
 }
+
+impl<T> Index<usize> for Normal3<T> {
+    type Output = T;
+    fn index(&self, index: usize) -> &T {
+        assert!(index < 4);
+        if index == 0 {
+            &self.x
+        } else if index == 1{
+            &self.y
+        } else {
+            &self.z
+        }
+    }
+}
+
 impl<T> Vector3<T>
 where
     T: Mul<Output = T> + Add<Output = T> + Sub<Output = T> + Neg<Output = T> + Copy,
@@ -236,7 +262,35 @@ impl Vector3<i16> where {
     }
 }
 
+impl<T> Normal3<T>
+where
+    T: Mul<Output = T> + Add<Output = T> + Sub<Output = T> + Neg<Output = T> + Copy,
+{
+    #[inline]
+    pub fn dot(v1: &Self, v2: &Self) -> T {
+        v1.x * v2.x + v1.y * v2.y + v1.z * v2.z
+    }
+
+    #[inline]
+    pub fn cross(v1: &Self, v2: &Self) -> Self {
+        let v1x = v1.x;
+        let v1y = v1.y;
+        let v1z = v1.z;
+        let v2x = v2.x;
+        let v2y = v2.y;
+        let v2z = v2.z;
+        Self::new(
+            v1x * v2z - v1z * v2y,
+            v1z * v2x - v1x * v2z,
+            v1x * v2y - v1y * v2x,
+        )
+    }
+}
+
 impl_abs_dot_vector!(Vector3<f32>);
 impl_abs_dot_vector!(Vector3<i16>);
+impl_abs_dot_vector!(Normal3<f32>);
+impl_abs_dot_vector!(Normal3<i16>);
 impl_vector!(Vector3{x, y, z});
 impl_vector!(Vector2{x, y});
+impl_vector!(Normal3{x, y, z});
