@@ -8,7 +8,7 @@ pub type Bounds2i = Bounds2<i16>;
 pub type Bounds3f = Bounds3<f32>;
 pub type Bounds3i = Bounds3<i16>;
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
 pub struct Bounds2<T>{
     pub p_min: Point2<T>,
     pub p_max: Point2<T>,
@@ -21,7 +21,7 @@ where T: Copy {
     }
 }
 
-#[derive(Debug, Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
 pub struct Bounds3<T>{
     pub p_min: Point3<T>,
     pub p_max: Point3<T>,

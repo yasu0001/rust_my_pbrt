@@ -89,7 +89,6 @@ mod core_geometry_tests {
 
         let a = Point2i::new(1, 2);
         assert_eq!(Point2f::new(1.0, 2.0), Point2f::into(&a));
-        assert_eq!(Vector2::new(1, 2), a.to_vector2());
 
         let a = Point2::new(1.0, 2.0);
         let c = Point2::new(3.0, 1.0);
@@ -107,7 +106,6 @@ mod core_geometry_tests {
         assert_eq!(ma, a + b);
         ma = a;
         ma -= b;
-        assert_eq!(ma, a.sub_vector(b));
 
         ma = a;
         ma *= scal;
@@ -119,8 +117,6 @@ mod core_geometry_tests {
 
         let a = Point2f::new(1.0, 2.0);
         let b = Point2f::new(1.0, 3.0);
-        assert_eq!(Point2f::length(a, b), (a - b).length());
-        assert_eq!(Point2f::length_squared(a, b), (a - b).length_squared());
     }
 
     #[test]
@@ -135,7 +131,6 @@ mod core_geometry_tests {
         );
 
         let a = Point3i::new(1, 2, 3);
-        assert_eq!(Vector3i::new(1, 2, 3), a.to_vector3());
 
         let a = Point3::new(1.0, 2.0, 3.0);
         let c = Point3::new(3.0, 1.0, 4.0);
@@ -153,10 +148,6 @@ mod core_geometry_tests {
         assert_eq!(ma, a + b);
 
         ma = a;
-        ma -= b;
-        assert_eq!(ma, a.sub_vector(b));
-
-        ma = a;
         ma *= scal;
         assert_eq!(ma, a * scal);
 
@@ -167,8 +158,6 @@ mod core_geometry_tests {
         let a = Point3f::new(1.2, 2.6, 4.0);
         let b = Point3f::new(1.0, -3.0, 3.0);
         let t: f32 = 0.7;
-        assert_eq!(Point3f::length(a, b), (a - b).length());
-        assert_eq!(Point3f::length_squared(a, b), (a - b).length_squared());
 
         assert_eq!(Point3f::new(a.x * (1.0-t) + b.x * t, a.y * (1.0-t) + b.y * t,
         a.z * (1.0-t) + b.z * t), Point3f::lerp(t, a, b));
