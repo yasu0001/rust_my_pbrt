@@ -1,12 +1,12 @@
-pub use geometry::*;
 pub use bounds::*;
 pub use rays::*;
 pub use vectors::*;
+pub use points::*;
 
-mod geometry;
 mod bounds;
 mod rays;
 mod vectors;
+mod points;
 
 #[macro_export]
 macro_rules! impl_scal_mul {
