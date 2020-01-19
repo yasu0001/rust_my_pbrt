@@ -1,5 +1,3 @@
-// 領域のソートなどに使用する
-// マルチスレッドプログラミングにおいて、サブシーンに分割することで、ここのシーンで処理することが可能になる
 use crate::core::geometry::{Point3, Point2, Point3f};
 use std::ops::Index;
 
@@ -8,7 +6,7 @@ pub type Bounds2i = Bounds2<i16>;
 pub type Bounds3f = Bounds3<f32>;
 pub type Bounds3i = Bounds3<i16>;
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default)]
 pub struct Bounds2<T>{
     pub p_min: Point2<T>,
     pub p_max: Point2<T>,
@@ -21,7 +19,7 @@ where T: Copy {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default)]
 pub struct Bounds3<T>{
     pub p_min: Point3<T>,
     pub p_max: Point3<T>,
