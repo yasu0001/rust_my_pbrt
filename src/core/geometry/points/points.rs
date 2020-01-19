@@ -2,13 +2,13 @@ use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, N
 use crate::core::geometry::{Vector2, Vector3};
 use crate::impl_scal_mul;
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
 pub struct Point2<T> {
     pub x : T,
     pub y : T,
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug)]
+#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
 pub struct Point3<T> {
     pub x : T,
     pub y : T,

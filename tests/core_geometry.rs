@@ -114,9 +114,6 @@ mod core_geometry_tests {
         ma = a;
         ma /= scal;
         assert_eq!(ma, a / scal);
-
-        let a = Point2f::new(1.0, 2.0);
-        let b = Point2f::new(1.0, 3.0);
     }
 
     #[test]
@@ -129,8 +126,6 @@ mod core_geometry_tests {
             },
             Point3::new(1.0, 2.0, 3.0)
         );
-
-        let a = Point3i::new(1, 2, 3);
 
         let a = Point3::new(1.0, 2.0, 3.0);
         let c = Point3::new(3.0, 1.0, 4.0);
@@ -182,7 +177,6 @@ mod core_geometry_tests {
             Normal3::new(1.0, 2.0, 3.0)
         );
 
-        let a = Normal3::new(1, 2, 3);
         let a = Normal3::new(1.0, 2.0, 3.0);
         let c = Normal3::new(3.0, 1.0, 4.0);
         let b = Normal3::new(2.0, 3.0, 1.0);
@@ -207,8 +201,6 @@ mod core_geometry_tests {
         assert_eq!(ma, a / scal);
 
         let a = Normal3::new(1.2, 2.6, 4.0);
-        let b = Normal3::new(1.0, -3.0, 3.0);
-        let t: f32 = 0.7;
         assert_eq!(a.length_squared(), a.x * a.x + a.y * a.y + a.z * a.z);
         assert_eq!(a.length_squared().sqrt(), a.length());
     }
@@ -217,5 +209,37 @@ mod core_geometry_tests {
         let a = Bounds2f::new(1.0, 3.0);
         assert_eq!(Point2f::new(1.0, 1.0), a.p_min);
         assert_eq!(Point2f::new(3.0, 3.0), a.p_max);
+    }
+    #[test]
+    fn check_rays() {
+        let ray: Ray = Default::default();
+        assert_eq!(ray.o, Point3f{..Default::default()});
+        assert_eq!(ray.d, Vector3f{..Default::default()});
+        
+        let o = Point3f::new(1.0, 1.0, 1.0);
+        let d = Vector3f::new(1.0, 1.0, 1.0);
+
+        let ray = Ray::new(o, d,1000.0, 0.0, None);
+        assert_eq!(ray.o, o);
+        assert_eq!(ray.d, d);
+
+        let t = 2.0;
+        assert_eq!(ray.point(t), o + d * t);
+
+        let ray_differential = RayDifferential::new(o, d,1000.0, 0.0, None);
+        assert_eq!(ray, *ray_differential.ray());
+        {
+            let mut ray_differential = RayDifferential::new(o, d,1000.0, 0.0, None);
+            let scale = 0.7;
+            let origin = Point3f::new(2.0, 1.0, 1.0);
+            let direction = Vector3f::new(1.0, 0.0, 0.0);
+            ray_differential.rx_origin = origin;
+            ray_differential.rx_direction = direction;
+            ray_differential.scale_differentials(scale);
+            assert_eq!(ray_differential.rx_origin, o + (origin-o)*scale);
+            assert_eq!(ray_differential.ry_origin, o + (Point3f{..Default::default()} - o) * scale);
+            assert_eq!(ray_differential.rx_direction, d + (direction - d) * scale);
+            assert_eq!(ray_differential.ry_direction, d + (Vector3f{..Default::default()} - d) * scale);
+        };
     }
 }
