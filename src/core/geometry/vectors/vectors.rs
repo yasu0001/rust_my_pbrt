@@ -3,20 +3,20 @@ use std::cmp::{min, max};
 use std::f32;
 use crate::{impl_scal_mul, impl_abs_geometry};
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
+#[derive(Copy, Clone, PartialEq, Hash, Debug, Default)]
 pub struct Vector2<T> {
     pub x: T,
     pub y: T,
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
+#[derive(Copy, Clone, PartialEq, Hash, Debug, Default)]
 pub struct Vector3<T> {
     pub x: T,
     pub y: T,
     pub z: T,
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
+#[derive(Copy, Clone, PartialEq, Hash, Debug, Default)]
 pub struct Normal3<T> {
     pub x: T,
     pub y: T,

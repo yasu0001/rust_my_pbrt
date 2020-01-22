@@ -1,18 +1,18 @@
-use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign, Div, DivAssign, Neg, Index};
 use crate::core::geometry::{Vector2, Vector3};
 use crate::impl_scal_mul;
+use std::ops::{Add, AddAssign, Div, DivAssign, Index, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
 pub struct Point2<T> {
-    pub x : T,
-    pub y : T,
+    pub x: T,
+    pub y: T,
 }
 
 #[derive(Copy, Clone, PartialEq, PartialOrd, Hash, Debug, Default)]
 pub struct Point3<T> {
-    pub x : T,
-    pub y : T,
-    pub z : T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
 }
 
 pub type Point2i = Point2<i16>;
@@ -128,7 +128,7 @@ macro_rules! impl_point {
 }
 
 impl<T> Point2<T> {
-    pub fn from_point3(p : Point3<T>) -> Self {
+    pub fn from_point3(p: Point3<T>) -> Self {
         Point2::new(p.x, p.y)
     }
 }
@@ -158,8 +158,11 @@ impl<T> Index<usize> for Point3<T> {
     }
 }
 
-impl<T> Point3<T> where T: Copy {
-    pub fn permute(v: &Self, x:usize, y:usize, z:usize) -> Self {
+impl<T> Point3<T>
+where
+    T: Copy,
+{
+    pub fn permute(v: &Self, x: usize, y: usize, z: usize) -> Self {
         Self::new(v[x], v[y], v[z])
     }
 }
@@ -186,5 +189,5 @@ impl Point3f {
     }
 }
 
-impl_point!(Point2{x, y}, Vector2);
-impl_point!(Point3{x, y, z}, Vector3);
+impl_point!(Point2 { x, y }, Vector2);
+impl_point!(Point3 { x, y, z }, Vector3);

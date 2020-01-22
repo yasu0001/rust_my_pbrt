@@ -164,6 +164,8 @@ mod core_geometry_tests {
         assert_eq!(Point3f::max(&a, &b), Point3f::new(a.x.max(b.x), a.y.max(b.y), a.z.max(b.z)));
         assert_eq!(Point3f::min(&a, &b), Point3f::new(a.x.min(b.x), a.y.min(b.y), a.z.min(b.z)));
         assert_eq!(Point3f::permute(&a, 1, 2, 0), Point3f::new(a.y, a.z, a.x));
+
+        let c = Point3f::new(1.5, 1.1, 3.3);
     }
 
     #[test]
@@ -205,10 +207,25 @@ mod core_geometry_tests {
         assert_eq!(a.length_squared().sqrt(), a.length());
     }
     #[test]
-    fn check_bounds() {
-        let a = Bounds2f::new(1.0, 3.0);
-        assert_eq!(Point2f::new(1.0, 1.0), a.p_min);
-        assert_eq!(Point2f::new(3.0, 3.0), a.p_max);
+    fn check_bounds3() {
+        let p1 = Point3::new(1.0, 2.0, 3.0);
+        let p2 = Point3::new(2.0, 4.0, 6.0);
+        let b1 = Bounds3::new(p1, p2);
+        let pb1 = Point3::new(-1.0, 2.2, 0.5);
+        let pb2 = Point3::new(3.0, 1.5, 2.2);
+        let b2 = Bounds3::new(pb1, pb2); 
+
+        assert_eq!(b1, Bounds3{p_min: p1, p_max: p2});
+
+        let p3 = Point3::new(1.5, 5.0, 1.0);
+        assert_eq!(Bounds3::union_from_point(&b1, p3), Bounds3 {p_min: Point3f::min(&p1, &p3), p_max: Point3f::max(&p2, &p3)});
+
+        assert_eq!(Bounds3::union(&b1, &b2), Bounds3{p_min: Point3f::min(&p1, &pb1), p_max: Point3f::max(&p2, &pb2)});
+    }
+    
+    #[test]
+    fn check_bounds2() {
+
     }
     #[test]
     fn check_rays() {

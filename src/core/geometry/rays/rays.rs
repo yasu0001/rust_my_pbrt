@@ -8,7 +8,7 @@ pub trait BaseRay<'a> {
     fn ray(&self) -> &Ray<'a>;
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default)]
+#[derive(Copy, Clone, PartialEq, Debug, Default)]
 pub struct Ray<'a> {
     pub o: Point3f,
     pub d: Vector3f,
@@ -35,7 +35,7 @@ impl<'a> BaseRay<'a> for Ray<'a> {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, PartialOrd, Debug, Default)]
+#[derive(Copy, Clone, PartialEq, Debug, Default)]
 pub struct RayDifferential<'a> {
     ray: Ray<'a>,
     pub has_differentials : bool,
